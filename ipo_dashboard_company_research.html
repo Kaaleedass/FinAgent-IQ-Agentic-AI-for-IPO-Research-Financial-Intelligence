@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IPO Intelligence Dashboard</title>
+<style>
+:root{--bg:#f4f6fb;--ink:#17213a;--muted:#6f7890;--line:#e4e8f2;--blue:#4169f5;--purple:#7c4dff;--teal:#11a683;--orange:#ff9f43;--pink:#ef4f9b;--card:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,Segoe UI,Arial,sans-serif}.shell{max-width:1500px;margin:auto;padding:25px}
+.hero{background:linear-gradient(120deg,#263fbd,#6846dc 55%,#bd4cc5);border-radius:22px;padding:27px 28px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:0 14px 30px #4b48bd30}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.8;font-weight:800}.hero h1{font-size:31px;margin:7px 0}.hero p{margin:0;opacity:.82}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn,.filelabel{border:0;border-radius:10px;padding:11px 14px;font-weight:750;font-size:12px;cursor:pointer;background:#fff;color:#273b9b}.btn.secondary{background:#ffffff20;color:white;border:1px solid #ffffff55}.filelabel input{display:none}
+.notice{margin:14px 0;padding:11px 14px;background:#fff8e8;border:1px solid #f4dfac;border-radius:10px;color:#72551a}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:15px 0}.kpi{background:#fff;border-radius:16px;padding:18px;border:1px solid var(--line);box-shadow:0 7px 20px #1b2e5a08;position:relative;overflow:hidden}.kpi:after{content:"";position:absolute;width:65px;height:65px;border-radius:50%;right:-20px;top:-20px;background:var(--tint)}.kpi .label{color:var(--muted);font-size:12px;font-weight:700}.kpi strong{font-size:28px;display:block;margin:7px 0}.kpi small{color:var(--muted)}.c-blue{--tint:#e1e8ff}.c-green{--tint:#d7f7eb}.c-purple{--tint:#eee4ff}.c-orange{--tint:#fff0d8}
+.charts{display:grid;grid-template-columns:1fr 1.35fr;gap:13px;margin-bottom:15px}.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 7px 20px #1b2e5a08;min-width:0}.panel h2{font-size:16px;margin:0 0 4px}.desc{font-size:12px;color:var(--muted);margin-bottom:15px}.donutarea{display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap}.donut{width:190px;height:190px;border-radius:50%;background:conic-gradient(#4169f5 0 25%,#11a683 25% 50%,#ff9f43 50% 75%,#e4e8f2 75%);position:relative;flex:none}.donut:after{content:"";position:absolute;inset:29%;background:white;border-radius:50%}.donutcenter{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;flex-direction:column}.donutcenter b{font-size:27px}.donutcenter span{font-size:11px;color:var(--muted)}.legend{display:grid;gap:11px;min-width:140px}.legendrow{display:flex;align-items:center;gap:8px;font-size:12px}.swatch{width:10px;height:10px;border-radius:3px;flex:none}.legendrow strong{margin-left:auto}.bars{display:grid;gap:13px}.barrow{display:grid;grid-template-columns:minmax(110px,1fr) 3fr 35px;align-items:center;gap:10px;font-size:12px}.bartrack{height:13px;background:#edf0f8;border-radius:99px;overflow:hidden}.barfill{height:100%;border-radius:99px;background:linear-gradient(90deg,#4169f5,#a24af4)}.barval{text-align:right;font-weight:800}.gmpbars{display:flex;align-items:flex-end;gap:9px;height:180px;padding:10px 4px 0;border-bottom:1px solid var(--line)}.gmpbar{flex:1;min-width:20px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;gap:5px}.gmpbar .bar{width:min(100%,42px);border-radius:7px 7px 0 0;background:linear-gradient(180deg,#ff6eaa,#7c4dff);min-height:2px}.gmpbar span{font-size:10px;color:var(--muted);max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gmpbar b{font-size:10px}
+.controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px;margin:14px 0}input,select{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:white;width:100%;color:var(--ink)}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:11px}table{border-collapse:collapse;width:100%;min-width:1000px}th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:#f9faff}tbody tr:hover{background:#fafaff}.company{font-weight:800}.sub{font-size:11px;color:var(--muted);margin-top:3px}.pill{font-size:10px;font-weight:800;padding:5px 8px;border-radius:99px;background:#edf0f6;color:#596274}.OPEN{background:#dff8ed;color:#08734d}.UPCOMING{background:#e4eaff;color:#2f50d1}.CLOSED,.LISTED{background:#edf0f5;color:#596274}.valuation{font-weight:800}.Undervalued{color:#07855c}.Overvalued{color:#d33f56}.Fair{color:#b17a00}.empty{text-align:center;color:var(--muted);padding:32px}.footer{font-size:11px;color:var(--muted);margin:13px 2px}
+@media(max-width:850px){.charts{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.hero{align-items:flex-start;flex-direction:column}}@media(max-width:520px){.shell{padding:12px}.hero{padding:20px}.hero h1{font-size:25px}.controls{grid-template-columns:1fr}.kpis{gap:8px}.kpi{padding:13px}.kpi strong{font-size:23px}.donut{width:155px;height:155px}}
+.markdown-answer h2{font-size:18px;margin:12px 0 6px}.markdown-answer h3{font-size:15px;margin:10px 0 5px}.markdown-answer p{margin:6px 0}.markdown-answer ul{margin:5px 0;padding-left:22px}.markdown-answer li{margin:3px 0}.markdown-answer code{background:#f0f2f8;padding:2px 4px;border-radius:4px}
+.calc-page{display:none}.calc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}.calc-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin:14px 0}.calc-inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px}.calc-field label{display:block;font-size:12px;font-weight:800;color:var(--muted);margin-bottom:6px}.calc-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}.calc-kpi{background:#f7f8fc;border:1px solid var(--line);border-radius:12px;padding:13px}.calc-kpi span{display:block;color:var(--muted);font-size:11px;font-weight:750}.calc-kpi strong{display:block;font-size:21px;margin-top:5px}.calc-chart{display:flex;align-items:flex-end;gap:12px;height:210px;padding:18px 8px 0;border-bottom:1px solid var(--line)}.calc-chart-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px;min-width:0}.calc-chart-bar{width:min(70%,56px);min-height:3px;border-radius:7px 7px 0 0;background:linear-gradient(180deg,#ff6eaa,#7c4dff)}.calc-chart-col b{font-size:11px;text-align:center}.calc-chart-col span{font-size:11px;color:var(--muted)}.calc-table{width:100%;min-width:0}.calc-table th,.calc-table td{white-space:normal}.calc-warning{background:#fff8e8;border:1px solid #f4dfac;color:#72551a;border-radius:10px;padding:12px;font-size:12px;margin-top:12px}@media(max-width:850px){.calc-grid{grid-template-columns:1fr}.calc-kpis{grid-template-columns:1fr}.calc-inputs{grid-template-columns:1fr}}
+</style></head><body><div class="shell">
+<header class="hero"><div><div class="eyebrow">India IPO market · Live file view</div><h1>IPO Intelligence</h1><p>GMP signals, issue status and AI valuation screening in one place</p></div><div class="actions"><button class="btn" id="openResearch">Company Research + AI Analyst</button><button class="btn" id="openListingCalculator">Listing Gain Calculator</button><button class="btn" id="refreshData">↻ Refresh IPO data</button><button class="btn secondary" id="demo">Preview dashboard</button><button class="btn" id="export">Export filtered CSV</button></div></header>
+<div class="notice dashboard-view" id="notice">Loading IPO records automatically from the configured local CSV...</div>
+<section class="kpis dashboard-view" id="dashboardKpis">
+<div class="kpi c-blue"><div class="label">TOTAL IPO RECORDS</div><strong id="total">—</strong><small id="boardNote">From loaded CSV</small></div>
+<div class="kpi c-green"><div class="label">OPEN IPOs</div><strong id="open">—</strong><small>Currently marked OPEN</small></div>
+<div class="kpi c-purple"><div class="label">UPCOMING IPOs</div><strong id="upcoming">—</strong><small>Marked UPCOMING</small></div>
+<div class="kpi c-orange"><div class="label">AVERAGE AVAILABLE GMP</div><strong id="avgGmp">—</strong><small id="gmpNote">GMP is unofficial sentiment</small></div>
+</section>
+<section class="charts dashboard-view" id="dashboardCharts">
+<div class="panel"><h2>IPO status mix</h2><div class="desc">Distribution of statuses in the loaded dataset</div><div class="donutarea"><div class="donut" id="donut"><div class="donutcenter"><b id="donutTotal">0</b><span>IPO records</span></div></div><div class="legend" id="statusLegend"></div></div></div>
+<div class="panel"><h2>AI valuation snapshot</h2><div class="desc">Labels from ipo_data.csv. “Fair” may be a neutral placeholder when financial data is missing.</div><div class="bars" id="valuationBars"></div></div>
+<div class="panel"><h2>GMP leaders</h2><div class="desc">Top GMP leaders: estimated gain in ₹ and % of the upper price band (GMP ÷ upper band × 100)</div><div class="gmpbars" id="gmpChart"></div></div>
+<div class="panel"><h2>Valuation label breakdown</h2><div class="desc">How the AI collector classified IPO records</div><div class="donutarea"><div class="donut" id="valuationDonut"><div class="donutcenter"><b id="valuationTotal">0</b><span>labelled IPOs</span></div></div><div class="legend" id="valuationLegend"></div></div></div>
+</section>
+<section class="panel dashboard-view" id="dashboardRecords"><h2>IPO records</h2><div class="desc" id="tableDesc">Search and filter the loaded CSV.</div>
+<div class="controls"><input id="search" placeholder="Search company, sector or symbol"><select id="statusFilter"><option value="">All statuses</option><option>UPCOMING</option><option>OPEN</option><option>CLOSED</option><option>LISTED</option></select><select id="boardFilter"><option value="">All boards</option><option value="MAINBOARD">Mainboard</option><option value="SME">SME</option></select><select id="valuationFilter"><option value="">All AI valuations</option><option>Undervalued</option><option>Fair</option><option>Overvalued</option><option>Insufficient data</option></select></div>
+<div class="tablewrap"><table><thead><tr><th>IPO / Company</th><th>Status</th><th>Open date</th><th>Close date</th><th>Price band ₹</th><th>GMP ₹</th><th>GMP %</th><th>AI valuation</th><th>AI reason</th></tr></thead><tbody id="rows"><tr><td colspan="9" class="empty">Load your CSV to begin.</td></tr></tbody></table></div></section>
+
+<section class="calc-page" id="listingCalculator">
+ <div class="panel">
+  <div class="calc-top"><div><h2 style="font-size:22px">IPO Listing Gain Calculator</h2><div class="desc">Select an OPEN IPO, choose the number of lots, and estimate profit using its GMP.</div></div><button class="btn" id="backToDashboard">← Back to dashboard</button></div>
+  <div class="calc-grid">
+   <div class="panel" style="box-shadow:none;background:#fbfcff">
+    <div class="calc-inputs">
+     <div class="calc-field"><label for="calcIpo">Open IPO only</label><select id="calcIpo"><option value="">Loading open IPOs…</option></select></div>
+     <div class="calc-field"><label for="calcLots">Number of lots</label><select id="calcLots"><option value="1">1 lot</option><option value="2">2 lots</option><option value="3">3 lots</option><option value="4">4 lots</option><option value="5">5 lots</option><option value="10">10 lots</option><option value="15">15 lots</option><option value="20">20 lots</option><option value="50">50 lots</option></select></div>
+     <div class="calc-field"><label for="calcLotSizeOverride">Lot size override (shares per lot, only if missing)</label><input id="calcLotSizeOverride" type="number" min="1" step="1" placeholder="Auto-read from CSV when available" style="width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--line);border-radius:10px;background:white;color:var(--ink)"></div>
+    </div>
+    <div class="calc-kpis">
+     <div class="calc-kpi"><span>Investment at upper price band</span><strong id="calcInvestment">—</strong></div>
+     <div class="calc-kpi"><span>Estimated GMP profit</span><strong id="calcProfit" style="color:#07855c">—</strong></div>
+     <div class="calc-kpi"><span>Estimated profit %</span><strong id="calcPercent">—</strong></div>
+    </div>
+    <div class="calc-kpis">
+     <div class="calc-kpi"><span>Upper price band</span><strong id="calcUpper">—</strong></div>
+     <div class="calc-kpi"><span>GMP per share</span><strong id="calcGmp">—</strong></div>
+     <div class="calc-kpi"><span>Estimated listing value</span><strong id="calcValue">—</strong></div>
+    </div>
+    <div id="calcMessage" class="calc-warning">GMP is unofficial market sentiment, not a guaranteed listing price or profit.</div>
+   </div>
+   <div class="panel" style="box-shadow:none"><h2>Estimated profit by lot count</h2><div class="desc">Illustrative profit at current GMP for 1, 2, 3, 5 and 10 lots.</div><div id="calcChart" class="calc-chart"><div class="empty">Select an open IPO with price band, lot size and GMP.</div></div></div>
+  </div>
+  <div class="panel" style="box-shadow:none"><h2>Calculation breakdown</h2><div class="desc">Uses the upper price band and lot size in ipo_data.csv.</div><div class="tablewrap"><table class="calc-table"><thead><tr><th>Input / result</th><th>Calculation</th><th>Amount</th></tr></thead><tbody id="calcBreakdown"><tr><td colspan="3" class="empty">Select an open IPO.</td></tr></tbody></table></div></div>
+ </div>
+</section>
+\n<div class="footer dashboard-view" id="dashboardFooter">GMP is unofficial and may be inaccurate. AI valuation is not a prediction or investment advice. Fundamental valuation requires verified EPS, offer-price P/E and comparable-company data; where missing, the collector should say so in the reason.</div>
+</div>
+<div id="researchOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#f4f6fb;overflow:auto">
+ <div style="max-width:1450px;margin:auto;padding:22px">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+   <div><div style="font-size:11px;letter-spacing:.14em;color:#6f7890;font-weight:800">IPO INTELLIGENCE</div><h1 style="margin:5px 0">Company Research & Prospectus Analyst</h1><p style="margin:0;color:#6f7890">Company details, local SEBI/RHP document status, and evidence-based Q&A using GPT-4o mini.</p></div>
+   <button class="btn" id="closeResearch" style="background:#263fbd;color:#fff">← Back to dashboard</button>
+  </div>
+  <div id="researchStatus" class="notice">Connect to the local Flask app to list available companies and PDFs.</div>
+  <div style="display:grid;grid-template-columns:minmax(250px,340px) minmax(0,1fr);gap:16px;margin-top:16px">
+   <section class="card" style="background:#fff;border:1px solid #e4e8f2;border-radius:16px;padding:18px">
+    <h2 style="margin-top:0">Select company</h2>
+    <input id="companySearch" placeholder="Search company..." style="width:100%;padding:11px;border:1px solid #dce2ef;border-radius:9px">
+    <select id="companySelect" size="12" style="width:100%;margin-top:10px;padding:8px;border:1px solid #dce2ef;border-radius:9px;min-height:260px"></select>
+    <div style="margin-top:14px;border-top:1px solid #e4e8f2;padding-top:14px">
+      <label for="prospectusUpload" style="font-weight:800;display:block;margin-bottom:7px">PDF missing? Upload it here</label>
+      <input id="prospectusUpload" type="file" accept="application/pdf,.pdf" style="width:100%;font-size:12px">
+      <button class="btn" id="uploadProspectus" style="margin-top:8px;background:#263fbd;color:white">Upload PDF and enable AI analysis</button>
+      <div id="uploadStatus" style="font-size:12px;margin-top:8px;color:#6f7890"></div>
+    </div>
+    <div id="documentStatus" style="margin-top:12px;padding:12px;border-radius:10px;background:#f4f6fb">Select a company to check the local SEBI document folder.</div>
+    <div id="documentFiles" style="margin-top:10px;font-size:12px;overflow-wrap:anywhere"></div>
+
+   </section>
+   <section style="display:grid;gap:16px;align-content:start">
+    <div class="card" style="background:#fff;border:1px solid #e4e8f2;border-radius:16px;padding:18px">
+     <h2 style="margin-top:0">Company profile</h2><div id="companyDetails" style="color:#6f7890">Choose a company to load its IPO metadata and available prospectus details.</div><h3 style="margin:20px 0 8px">Last 3 years: Revenue, Profit & Assets</h3><div id="threeYearFinancialCharts" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:18px"><div style="color:#6f7890">Select a company to load three-year financial charts from its prospectus.</div></div><h3 style="margin:20px 0 8px">Additional financial charts extracted from prospectus</h3><div id="prospectusCharts" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px"><div style="color:#6f7890">Charts appear when a local PDF is available and contains extractable financial figures.</div></div>
+    </div>
+    <div class="card" style="background:#fff;border:1px solid #e4e8f2;border-radius:16px;padding:18px">
+     <h2 style="margin-top:0">Ask the Data Analyst Agent</h2>
+     <p style="color:#6f7890;margin-top:-4px">Ask about financials, risks, valuation evidence, issue structure, or specific prospectus sections. Answers must cite document pages when available.</p>
+     <div id="chatHistory" style="max-height:300px;overflow:auto;background:#f7f8fc;border:1px solid #e4e8f2;border-radius:10px;padding:12px;margin-bottom:10px"></div>
+     <textarea id="analystQuestion" rows="3" placeholder="Example: Summarize revenue, profit, debt, key risks and whether the document supports a valuation view..." style="width:100%;padding:12px;border:1px solid #dce2ef;border-radius:10px;resize:vertical"></textarea>
+     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:9px"><button class="btn" id="askAnalyst" style="background:#263fbd;color:white">Ask GPT-4o mini</button><button class="btn" id="clearChat" style="background:#edf0f8;color:#26304b">Clear chat</button></div>
+    </div>
+   </section>
+  </div>
+  <p style="color:#6f7890;font-size:12px;margin-top:18px">The analyst uses local PDF evidence and IPO metadata. It does not guarantee listing performance or replace independent investment research. Missing evidence is reported as unavailable.</p>
+ </div>
+</div>
+<script>
+window.addEventListener('error',e=>{const n=document.getElementById('notice');if(n)n.textContent='Dashboard JavaScript error: '+e.message+' (open browser DevTools Console for details).';});
+let data=[];const $=id=>document.getElementById(id);
+const colors={OPEN:'#11a683',UPCOMING:'#4169f5',CLOSED:'#ff9f43',LISTED:'#ef4f9b',UNKNOWN:'#aab2c5',Undervalued:'#11a683',Fair:'#ff9f43',Overvalued:'#ef4f68','Insufficient data':'#aab2c5'};
+function parseCSV(s){s=s.replace(/^\uFEFF/,'');let rows=[],row=[],f='',q=false;for(let i=0;i<s.length;i++){let c=s[i],n=s[i+1];if(q){if(c==='"'&&n==='"'){f+='"';i++}else if(c==='"')q=false;else f+=c}else if(c==='"')q=true;else if(c===','){row.push(f);f=''}else if(c==='\n'){row.push(f);rows.push(row);row=[];f=''}else if(c!=='\r')f+=c}if(f||row.length){row.push(f);rows.push(row)}let h=(rows.shift()||[]).map(x=>x.trim());return rows.filter(r=>r.some(x=>x.trim())).map(r=>Object.fromEntries(h.map((k,i)=>[k,(r[i]||'').trim()])))}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function num(v){if(v==null||v===''||String(v).toLowerCase()==='nan')return null;let n=Number(String(v).replace(/[₹,%\s,]/g,''));return Number.isFinite(n)?n:null}
+function fieldValue(r,names){
+ const keys=Object.keys(r||{});
+ const norm=v=>String(v).toLowerCase().replace(/[^a-z0-9]/g,'');
+ for(const name of names){
+  const found=keys.find(k=>norm(k)===norm(name));
+  if(found && r[found]!=='' && r[found]!==null && r[found]!==undefined) return r[found];
+ }
+ // Handle common export labels such as "IPO Lot Size (Shares)".
+ if(names.some(n=>norm(n).includes('lotsize'))){
+  const found=keys.find(k=>norm(k).includes('lot') && (norm(k).includes('size') || norm(k).includes('qty')) && r[k]!=='' && r[k]!=null);
+  if(found) return r[found];
+ }
+ return null;
+}
+function discoverNumericField(r, kind){
+ const keys=Object.keys(r||{});
+ const norm=v=>String(v).toLowerCase().replace(/[^a-z0-9]/g,'');
+ let candidates=[];
+ if(kind==='gmp'){
+  candidates=keys.filter(k=>{const n=norm(k);return n.includes('gmp') && !n.includes('pct') && !n.includes('percent') && !n.includes('percentage') && !n.includes('change') && !n.includes('date');});
+  // Grey-market premium / premium aliases, but do not confuse GMP percentage with rupees.
+  candidates=candidates.concat(keys.filter(k=>{const n=norm(k);return (n.includes('greymarketpremium')||n.includes('grey-market-premium')||n.includes('premiumrupees'))&&!n.includes('pct')&&!n.includes('percent');}));
+ }
+ for(const key of [...new Set(candidates)]){
+  const value=num(r[key]);
+  if(value!==null) return value;
+ }
+ return null;
+}
+function gmp(r){
+ const direct=num(fieldValue(r,['gmp','lastGmp','last_gmp','gmp_rupees','gmp_price','gmpValue','gmp_value','currentGmp','current_gmp','estimated_gmp','estimatedGmp','grey_market_premium','greyMarketPremium','GMP (₹)','GMP ₹','gmp_inr','gmp_amount','last_gmp_inr','gmp_rate']));
+ return direct!==null?direct:discoverNumericField(r,'gmp');
+}
+function board(r){return String(r.board||'UNKNOWN').trim().toUpperCase().replace(/\s+/g,'')}function gmpPct(r){let g=gmp(r),upper=num(r.price_high??r.priceMax);if(g!==null&&upper!==null&&upper>0)return g/upper*100;let p=num(r.gmp_pct??r.lastGmpPct);return p}function status(r){return String(r.status||'UNKNOWN').toUpperCase()}function label(r){let v=r.ai_valuation||r.valuation_status||'Insufficient data';return ['Undervalued','Fair','Overvalued','Insufficient data'].includes(v)?v:'Insufficient data'}
+function date(v){if(!v)return'—';let d=new Date(v);return isNaN(d)?esc(v):d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'})}
+function money(v){let n=num(v);return n===null?'—':n.toLocaleString('en-IN',{maximumFractionDigits:2})}
+function drawDonut(elId,legendId,counts,keys,totalId){let total=keys.reduce((s,k)=>s+(counts[k]||0),0),start=0,parts=[];keys.forEach(k=>{let count=counts[k]||0;if(count){let end=start+count/Math.max(total,1)*100;parts.push(`${colors[k]||'#aab2c5'} ${start}% ${end}%`);start=end}});$(elId).style.background=parts.length?`conic-gradient(${parts.join(',')})`:'conic-gradient(#e5e9f2 0 100%)';if(totalId)$(totalId).textContent=total;$(legendId).innerHTML=keys.map(k=>`<div class="legendrow"><span class="swatch" style="background:${colors[k]||'#aab2c5'}"></span><span>${esc(k)}</span><strong>${counts[k]||0}</strong></div>`).join('')}
+function render(){let q=$('search').value.toLowerCase(),st=$('statusFilter').value,vl=$('valuationFilter').value,bd=$('boardFilter').value;
+let filtered=data.filter(r=>(!q||[r.ipo_name,r.name,r.sector,r.symbol].join(' ').toLowerCase().includes(q))&&(!st||status(r)===st)&&(!vl||label(r)===vl)&&(!bd||board(r)===bd));
+$('rows').innerHTML=filtered.length?filtered.map(r=>{let g=gmp(r),p=gmpPct(r),v=label(r);return `<tr><td><div class="company">${esc(r.ipo_name||r.name)}</div><div class="sub">${esc(r.sector||r.board||'')}</div></td><td><span class="pill ${status(r)}">${status(r)}</span></td><td>${date(r.open_date)}</td><td>${date(r.close_date)}</td><td>${num(r.price_low)!==null||num(r.price_high)!==null?money(r.price_low)+' – '+money(r.price_high):'—'}</td><td style="font-weight:800;color:${g===null?'#6f7890':g>=0?'#07855c':'#d33f56'}">${g===null?'—':(g>0?'+':'')+money(g)}</td><td>${p===null?'—':(p>0?'+':'')+money(p)+'%'}</td><td style="font-weight:800;color:${colors[v]||'#6f7890'}">${esc(v)}</td><td style="white-space:normal;min-width:250px;max-width:390px">${esc(r.ai_reason||r.valuation_reason||'No AI reason saved. Run ipo_collector_ai.py to enrich this record.')}</td></tr>`}).join(''):'<tr><td colspan="9" class="empty">No records match your filters.</td></tr>';
+let statuses={},vals={};data.forEach(r=>{statuses[status(r)]=(statuses[status(r)]||0)+1;let v=label(r);vals[v]=(vals[v]||0)+1});
+$('total').textContent=data.length;$('open').textContent=data.filter(r=>status(r)==='OPEN').length;$('upcoming').textContent=data.filter(r=>status(r)==='UPCOMING').length;
+let gs=data.map(gmp).filter(x=>x!==null);$('avgGmp').textContent=gs.length?'₹'+money(gs.reduce((a,b)=>a+b,0)/gs.length):'—';$('gmpNote').textContent=`${gs.length} of ${data.length} IPOs have GMP`;$('boardNote').textContent=`${data.filter(r=>board(r)==='MAINBOARD').length} mainboard · ${data.filter(r=>board(r)==='SME').length} SME`;
+$('donutTotal').textContent=data.length;drawDonut('donut','statusLegend',statuses,['OPEN','UPCOMING','CLOSED','LISTED','UNKNOWN']);
+$('valuationTotal').textContent=data.length;drawDonut('valuationDonut','valuationLegend',vals,['Undervalued','Fair','Overvalued','Insufficient data']);
+let max=Math.max(1,...['Undervalued','Fair','Overvalued','Insufficient data'].map(k=>vals[k]||0));$('valuationBars').innerHTML=['Undervalued','Fair','Overvalued','Insufficient data'].map(k=>`<div class="barrow"><span>${k}</span><div class="bartrack"><div class="barfill" style="width:${(vals[k]||0)/max*100}%;background:${colors[k]}"></div></div><b>${vals[k]||0}</b></div>`).join('');
+let top=data.filter(r=>gmp(r)!==null).sort((a,b)=>gmp(b)-gmp(a)).slice(0,8),mx=Math.max(1,...top.map(gmp));$('gmpChart').innerHTML=top.length?top.map(r=>`<div class="gmpbar" title="${esc(r.ipo_name)}: ₹${money(gmp(r))}; ${money(gmpPct(r))}% of upper band"><b>₹${money(gmp(r))}</b><small style="font-size:10px;font-weight:700;color:#07855c">${gmpPct(r)===null?'—':money(gmpPct(r))+'%'}</small><div class="bar" style="height:${Math.max(3,gmp(r)/mx*100)}px"></div><span>${esc(r.ipo_name||r.name)}</span></div>`).join(''):'<div class="empty">No GMP values available</div>';
+$('tableDesc').textContent=`Showing ${filtered.length} of ${data.length} records`;
+}
+
+const dashboardViewIds=['notice','dashboardKpis','dashboardCharts','dashboardRecords','dashboardFooter'];
+function showListingCalculator(show){
+ dashboardViewIds.forEach(id=>{const el=$(id);if(el)el.style.display=show?'none':'';});
+ $('listingCalculator').style.display=show?'block':'none';
+ if(show){refreshCalculatorOptions();updateListingCalculation();window.scrollTo({top:0,behavior:'smooth'});}else window.scrollTo({top:0,behavior:'smooth'});
+}
+$('openListingCalculator').addEventListener('click',()=>showListingCalculator(true));
+$('backToDashboard').addEventListener('click',()=>showListingCalculator(false));
+function openIposForCalculator(){
+ return data.filter(r=>{
+  const s=String(fieldValue(r,['status','ipo_status','issue_status','current_status'])||'').trim().toUpperCase();
+  const isEligible=['OPEN','UPCOMING','OPENING SOON','UPCOMING IPO'].includes(s);
+  return isEligible && gmp(r)!==null;
+ });
+}
+function refreshCalculatorOptions(){
+ const sel=$('calcIpo'),previousName=sel.options[sel.selectedIndex]?.text,eligible=openIposForCalculator();
+ sel.innerHTML=eligible.length?eligible.map((r,i)=>`<option value="${i}">${esc(r.ipo_name||r.name||r.company_name||'Unnamed IPO')} — ${String(fieldValue(r,['status','ipo_status','issue_status'])||'').toUpperCase()} — GMP ${fmtINR(gmp(r))}</option>`).join(''):'<option value="">No OPEN/UPCOMING IPO with numeric GMP found in CSV</option>';
+ if(previousName){
+  const idx=eligible.findIndex(r=>(r.ipo_name||r.name||r.company_name||'Unnamed IPO')===previousName.split(' — ')[0]);
+  if(idx>=0)sel.value=String(idx);
+ }
+ $('calcMessage').textContent=eligible.length?`${eligible.length} OPEN/UPCOMING IPO(s) with a numeric GMP are available. Select one to estimate listing gain. GMP is unofficial and not guaranteed.`:'No OPEN/UPCOMING IPO with a numeric GMP was found. Check the CSV GMP column names and values.';
+ updateListingCalculation();
+}
+function fmtINR(n){return Number.isFinite(n)?'₹'+n.toLocaleString('en-IN',{maximumFractionDigits:2}):'—';}
+function updateListingCalculation(){
+ const open=openIposForCalculator(),idx=Number($('calcIpo').value),r=open[idx],lots=Number($('calcLots').value)||1;
+ if(!r){['calcInvestment','calcProfit','calcPercent','calcUpper','calcGmp','calcValue'].forEach(id=>$(id).textContent='—');$('calcChart').innerHTML='<div class="empty">No open IPO to calculate. Check the CSV status field.</div>';$('calcBreakdown').innerHTML='<tr><td colspan="3" class="empty">No open IPO selected.</td></tr>';return;}
+ const upper=num(fieldValue(r,['price_high','priceMax','upper_price_band','upperPriceBand','price_band_high','upper_band','priceMaxValue','price_max','upper_price','upper_price_band_inr','price_band_upper','max_price','issue_price_max'])),csvLotSize=num(fieldValue(r,['lot_size','lotSize','lot','minimum_lot_size','minimumLotSize','market_lot','marketLot','ipo_lot_size','lot_size_shares','lot_size_qty','lot_qty','minimum_bid_quantity','bid_lot','market_lot_size'])),lotOverride=num($('calcLotSizeOverride')?.value),lotSize=(csvLotSize!==null&&csvLotSize>0)?csvLotSize:lotOverride,g=gmp(r);
+ $('calcUpper').textContent=upper===null?'—':fmtINR(upper);$('calcGmp').textContent=g===null?'—':fmtINR(g);
+ if(upper===null||lotSize===null||g===null||upper<=0||lotSize<=0){
+  ['calcInvestment','calcProfit','calcPercent','calcValue'].forEach(id=>$(id).textContent='—');
+  $('calcMessage').textContent=`Cannot calculate: ${upper===null?'upper price band missing; ':''}${lotSize===null?'lot size missing (enter official shares per lot below); ':''}${g===null?'GMP missing; ':''} Check the selected CSV row. Available columns: ${Object.keys(r).join(', ')}`;
+  $('calcChart').innerHTML='<div class="empty">Chart unavailable until price band, lot size and GMP are available.</div>';$('calcBreakdown').innerHTML='<tr><td colspan="3" class="empty">Required input data is missing.</td></tr>';return;
+ }
+ const shares=lotSize*lots,investment=upper*shares,profit=g*shares,pct=g/upper*100,listingValue=investment+profit;
+ $('calcInvestment').textContent=fmtINR(investment);$('calcProfit').textContent=(profit>=0?'+':'−')+fmtINR(Math.abs(profit));$('calcPercent').textContent=(pct>=0?'+':'')+pct.toFixed(2)+'%';$('calcValue').textContent=fmtINR(listingValue);
+ $('calcMessage').textContent=`Estimate for ${r.ipo_name||r.name}: ${lots} lot(s) × ${lotSize} shares. Assumes listing price = upper issue price + GMP (${fmtINR(upper)} + ${fmtINR(g)} = ${fmtINR(upper+g)} per share). GMP changes and actual listing price may be lower. Taxes, brokerage and other charges excluded.`;
+ const series=[1,2,3,5,10],max=Math.max(1,...series.map(n=>Math.abs(g*lotSize*n)));
+ $('calcChart').innerHTML=series.map(n=>{const p=g*lotSize*n;return `<div class="calc-chart-col" title="${n} lot(s): ${fmtINR(p)}"><b>${p>=0?'+':''}${fmtINR(p)}</b><div class="calc-chart-bar" style="height:${Math.max(3,Math.abs(p)/max*130)}px;background:${p<0?'linear-gradient(180deg,#ff9f43,#e44b5e)':'linear-gradient(180deg,#ff6eaa,#7c4dff)'}"></div><span>${n} lot${n===1?'':'s'}</span></div>`}).join('');
+ const rows=[['IPO selected',r.ipo_name||r.name,'—'],['Upper price band','Price per share',fmtINR(upper)],['GMP','Unofficial GMP per share',fmtINR(g)],['Lot size','Shares per lot',lotSize.toLocaleString('en-IN')],['Number of lots','Selected lots',String(lots)],['Total shares','Lot size × lots',shares.toLocaleString('en-IN')],['Investment','Upper band × total shares',fmtINR(investment)],['Estimated GMP profit','GMP × total shares',fmtINR(profit)],['Estimated profit percentage','GMP ÷ upper band × 100',pct.toFixed(2)+'%'],['Estimated listing value','Investment + estimated profit',fmtINR(listingValue)]];
+ $('calcBreakdown').innerHTML=rows.map(row=>`<tr><td><b>${esc(row[0])}</b></td><td>${esc(row[1])}</td><td>${esc(row[2])}</td></tr>`).join('');
+}
+$('calcIpo').addEventListener('change',updateListingCalculation);$('calcLots').addEventListener('change',updateListingCalculation);$('calcLotSizeOverride')?.addEventListener('input',updateListingCalculation);
+
+async function refreshIPOData(){
+ const btn=$('refreshData');if(btn){btn.disabled=true;btn.textContent='Refreshing...';}
+ $('notice').textContent='Reading latest IPO records from the fixed CSV path...';
+ try{
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),12000);
+  let r,payload;
+  try {
+    r=await fetch('/api/data?ts='+Date.now(),{cache:'no-store',signal:controller.signal});
+    payload=await r.json();
+  } finally { clearTimeout(timer); }
+  if(!r.ok)throw new Error(payload.error||'CSV could not be read');
+  data=payload.records||[];
+  $('notice').textContent=`Loaded ${payload.count} records from ${payload.csv_path}. File updated: ${new Date(payload.modified*1000).toLocaleString()}.`;
+  render();
+  // PDF inventory is expensive; load it only when Company Research is opened, not during dashboard startup.
+ }catch(e){
+  $('notice').textContent='Could not load IPO data automatically: '+(e.name==='AbortError'?'request timed out after 12 seconds. Check that the updated ipo_app.py is running and CSV path exists.':e.message);
+  data=[];render();
+ }finally{if(btn){btn.disabled=false;btn.textContent='↻ Refresh IPO data';}}
+}
+$('refreshData').addEventListener('click',refreshIPOData);
+['search','statusFilter','boardFilter','valuationFilter'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',render));
+$('export').addEventListener('click',()=>{let q=$('search').value.toLowerCase(),st=$('statusFilter').value,vl=$('valuationFilter').value,bd=$('boardFilter').value,rows=data.filter(r=>(!q||[r.ipo_name,r.name,r.sector,r.symbol].join(' ').toLowerCase().includes(q))&&(!st||status(r)===st)&&(!vl||label(r)===vl)&&(!bd||board(r)===bd));if(!rows.length){alert('No rows to export');return}let cols=[...new Set(rows.flatMap(r=>Object.keys(r)))],cell=v=>{v=String(v??'');return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};let csv=[cols.map(cell).join(','),...rows.map(r=>cols.map(c=>cell(r[c])).join(','))].join('\r\n'),a=document.createElement('a'),u=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.href=u;a.download='ipo_filtered_export.csv';a.click();URL.revokeObjectURL(u)});
+$('demo').addEventListener('click',()=>{data=[{ipo_name:'Jio Platforms Limited',status:'UPCOMING',open_date:'2026-10-21',close_date:'2026-10-23',price_low:1065,price_high:1119,gmp:245,gmp_pct:21.9,sector:'Information Technology',board:'MAINBOARD',ai_valuation:'Fair',ai_reason:'Demo only: EPS and peer P/E not supplied; neutral placeholder.'},{ipo_name:'Paras Healthcare Limited',status:'UPCOMING',open_date:'2026-10-21',close_date:'2026-10-23',price_low:660,price_high:693,gmp:96,gmp_pct:13.85,sector:'Healthcare',board:'MAINBOARD',ai_valuation:'Fair',ai_reason:'Demo only: valuation inputs missing.'},{ipo_name:'Zetwerk Manufacturing Businesses Limited',status:'OPEN',open_date:'2026-10-15',close_date:'2026-10-19',price_low:143,price_high:151,gmp:null,sector:'Manufacturing',board:'MAINBOARD',ai_valuation:'Fair',ai_reason:'Demo only: valuation inputs missing.'},{ipo_name:'Tonbo Imaging India Limited',status:'OPEN',open_date:'2026-10-15',close_date:'2026-10-19',price_low:665,price_high:700,gmp:505,gmp_pct:72,sector:'Technology',board:'MAINBOARD',ai_valuation:'Fair',ai_reason:'Demo only: high GMP alone does not establish undervaluation.'},{ipo_name:'Bonfiglioli Transmissions Limited',status:'OPEN',open_date:'2026-10-15',close_date:'2026-10-19',price_low:558,price_high:586,gmp:132,gmp_pct:22,sector:'Industrials',board:'MAINBOARD',ai_valuation:'Fair',ai_reason:'Demo only: peer valuation data missing.'}];$('notice').textContent='Preview data loaded. These sample rows are illustrative, not live data.';render()});
+if(data.length){$('notice').textContent=`Loaded ${data.length} IPO records from the connected Python collector. Run the collector again to refresh this dashboard.`;render()}
+
+const researchOverlay=document.getElementById('researchOverlay');
+const researchStatus=document.getElementById('researchStatus');
+const companySelect=document.getElementById('companySelect');
+const companySearch=document.getElementById('companySearch');
+const companyDetails=document.getElementById('companyDetails');
+const documentStatus=document.getElementById('documentStatus');
+const documentFiles=document.getElementById('documentFiles');
+const prospectusCharts=document.getElementById('prospectusCharts');
+const threeYearFinancialCharts=document.getElementById('threeYearFinancialCharts');
+const chatHistory=document.getElementById('chatHistory');
+let researchCompanies=[],selectedResearchCompany='';
+document.getElementById('openResearch').addEventListener('click',async()=>{researchOverlay.style.display='block';await loadResearchCompanies();});
+document.getElementById('closeResearch').addEventListener('click',()=>researchOverlay.style.display='none');
+async function loadResearchCompanies(){
+ try{researchStatus.textContent='Loading IPO records and available local PDFs...';const r=await fetch('/api/companies');if(!r.ok)throw new Error(await r.text());const p=await r.json();researchCompanies=p.companies||[];researchStatus.textContent=`Loaded ${researchCompanies.length} IPO records. PDF inventory: ${p.pdf_count} file(s).`;renderCompanyOptions();}
+ catch(e){researchStatus.textContent='Backend unavailable. Start ipo_app.py and open http://127.0.0.1:5000. '+e.message;}
+}
+function escapeResearch(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function renderCompanyOptions(){const q=(companySearch.value||'').toLowerCase();const rows=researchCompanies.filter(c=>(c.ipo_name||'').toLowerCase().includes(q));companySelect.innerHTML=rows.map(c=>`<option value="${escapeResearch(c.ipo_name)}">${escapeResearch(c.ipo_name)}${c.pdf_found?' ✓ PDF':''}</option>`).join('');if(selectedResearchCompany&&rows.some(c=>c.ipo_name===selectedResearchCompany))companySelect.value=selectedResearchCompany;}
+companySearch.addEventListener('input',renderCompanyOptions);
+companySelect.addEventListener('change',()=>loadCompanyResearch(companySelect.value));
+async function loadCompanyResearch(name){
+ if(!name)return;selectedResearchCompany=name;chatHistory.innerHTML='';companyDetails.textContent='Loading company details...';documentStatus.textContent='Checking configured SEBI document folders...';documentFiles.textContent='';prospectusCharts.innerHTML='<div style="color:#6f7890">Reading prospectus data...</div>';threeYearFinancialCharts.innerHTML='<div style="color:#6f7890">Extracting last three reported financial years...</div>';
+ try{
+  const r=await fetch('/api/company?name='+encodeURIComponent(name));const d=await r.json();if(!r.ok)throw new Error(d.error||'Request failed');const c=d.company||{};renderThreeYearCharts(c.fixed_financial_charts||[],c.financial_chart_note||'');
+  const fields=[['Status',c.status],['Board',c.board],['Sector',c.sector],['Open date',c.open_date],['Close date',c.close_date],['Price band',(c.price_low!=null||c.price_high!=null)?`${c.price_low??'—'} – ${c.price_high??'—'}`:null],['Lot size',c.lot_size],['Issue size (₹ Cr)',c.issue_size_cr],['GMP (₹)',c.gmp],['GMP %',c.gmp_pct],['Subscription',c.subscription],['Listing date',c.listing_date],['AI valuation',c.ai_valuation],['AI reason',c.ai_reason],['Financial data status',c.financial_data_status],['Source evidence',c.source_evidence]];
+  companyDetails.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px">'+fields.filter(x=>x[1]!==null&&x[1]!==undefined&&x[1]!=='').map(x=>`<div style="background:#f7f8fc;border-radius:9px;padding:10px"><div style="font-size:11px;color:#6f7890;font-weight:700">${escapeResearch(x[0])}</div><div style="font-weight:650;overflow-wrap:anywhere">${escapeResearch(x[1])}</div></div>`).join('')+'</div>';
+  if(c.pdf_found){documentStatus.innerHTML='<b style="color:#087c58">SEBI/prospectus PDF found</b><br>'+escapeResearch(c.pdf_name)+'<br><span style="font-size:12px;color:#6f7890">Text extraction: '+escapeResearch(c.extraction_status||'Available')+'</span>';documentFiles.textContent=c.pdf_path||'';renderProspectusCharts(c.financial_charts||[]);}
+  else{documentStatus.innerHTML='<b style="color:#b42318">No document found in configured SEBI folder</b><br><span style="font-size:12px">The agent will use IPO metadata only and will state that prospectus evidence is unavailable.</span>';prospectusCharts.innerHTML='<div style="background:#fff8e8;padding:12px;border-radius:10px">No prospectus charts: no local document was found.</div>';threeYearFinancialCharts.innerHTML='<div style="background:#fff8e8;padding:12px;border-radius:10px">No document found. Upload the company prospectus PDF to load revenue, profit and total assets charts.</div>';}
+  appendChat('system',c.pdf_found?`Selected ${name}. Prospectus available: ${c.pdf_name}.`:`Selected ${name}. No document found in configured SEBI folder.`);
+ }catch(e){companyDetails.textContent='Could not load company details: '+e.message;}
+}
+
+function renderThreeYearCharts(charts,note){
+ const names=['Revenue','Profit after tax','Total assets'];
+ const valid=(charts||[]).filter(ch=>Array.isArray(ch.values)&&ch.values.length);
+ if(!valid.length){
+  threeYearFinancialCharts.innerHTML='<div style="background:#fff8e8;padding:12px;border-radius:10px">No verified three-year figures extracted. Check that the PDF contains readable financial statements, then ask the Analyst to extract the figures. '+escapeResearch(note||'')+'</div>';
+  return;
+ }
+ threeYearFinancialCharts.innerHTML=names.map(name=>{
+  const ch=valid.find(x=>String(x.metric).toLowerCase()===name.toLowerCase());
+  if(!ch)return `<div style="border:1px solid #e4e8f2;border-radius:12px;padding:14px;background:#fff"><b>${escapeResearch(name)}</b><p style="color:#6f7890;font-size:12px">Not available in the selected PDF.</p></div>`;
+  const vals=ch.values.slice(-3),max=Math.max(...vals.map(v=>Math.abs(Number(v.value))),1);
+  return `<div style="border:1px solid #e4e8f2;border-radius:12px;padding:14px;background:#fff"><b>${escapeResearch(ch.metric)} — last reported years</b><div style="font-size:11px;color:#6f7890;margin:5px 0 12px">${escapeResearch(ch.unit||'Reported unit')}</div><div style="display:flex;align-items:flex-end;gap:12px;height:145px;border-bottom:1px solid #dce2ef;padding:0 4px 5px">${vals.map(v=>`<div title="${escapeResearch(v.year)}: ${escapeResearch(v.value)}" style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%"><b style="font-size:11px;overflow-wrap:anywhere">${escapeResearch(Number(v.value).toLocaleString('en-IN',{maximumFractionDigits:2}))}</b><div style="width:70%;height:${Math.max(4,Math.abs(Number(v.value))/max*100)}%;min-height:4px;background:linear-gradient(180deg,#6c7df7,#a65ae0);border-radius:5px 5px 0 0"></div><span style="font-size:10px;color:#6f7890;margin-top:5px">${escapeResearch(v.year)}</span></div>`).join('')}</div><div style="font-size:10px;color:#6f7890;margin-top:8px">${vals.map(v=>v.page?`${escapeResearch(v.year)}: PDF p.${escapeResearch(v.page)}`:'').filter(Boolean).join(' · ')}</div></div>`;
+ }).join('');
+}
+
+function renderProspectusCharts(charts){
+ if(!charts.length){prospectusCharts.innerHTML='<div style="background:#fff8e8;padding:12px;border-radius:10px">PDF found, but no reliable chart-ready figures could be extracted. Ask the analyst to locate the relevant table or page.</div>';return;}
+ prospectusCharts.innerHTML=charts.map(ch=>{const vals=(ch.values||[]).filter(v=>v.label!==undefined&&Number.isFinite(Number(v.value)));if(!vals.length)return '';const max=Math.max(...vals.map(v=>Math.abs(Number(v.value))),1);return `<div style="border:1px solid #e4e8f2;border-radius:12px;padding:12px;background:#fff"><div style="font-weight:800;margin-bottom:4px">${escapeResearch(ch.title||'Financial metric')}</div><div style="font-size:11px;color:#6f7890;margin-bottom:10px">${escapeResearch(ch.unit||'Reported value')} · ${escapeResearch(ch.source||'Prospectus; page not identified')}</div>${vals.map(v=>`<div style="display:grid;grid-template-columns:70px 1fr 70px;gap:7px;align-items:center;margin:7px 0"><span style="font-size:11px;color:#6f7890">${escapeResearch(v.label)}</span><div style="height:13px;background:#edf0f8;border-radius:5px;overflow:hidden"><div style="height:100%;width:${Math.min(100,Math.abs(Number(v.value))/max*100)}%;background:linear-gradient(90deg,#4169f5,#a14de0);border-radius:5px"></div></div><b style="font-size:11px;text-align:right">${escapeResearch(v.value)}</b></div>`).join('')}</div>`;}).join('');
+}
+function markdownToSafeHtml(text){
+ let x=escapeResearch(text||'');
+ // Basic Markdown formatting for headings, bold/italic, inline code and lists.
+ x=x.replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h2>$1</h2>');
+ x=x.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/`([^`]+)`/g,'<code>$1</code>');
+ x=x.replace(/^\s*[-•]\s+(.+)$/gm,'<li>$1</li>');
+ x=x.replace(/(?:<li>.*?<\/li>\n?)+/gs,m=>'<ul>'+m+'</ul>');
+ x=x.replace(/^\s*(\d+)\.\s+(.+)$/gm,'<li>$2</li>');
+ x=x.replace(/\n{2,}/g,'</p><p>').replace(/\n/g,'<br>');
+ return '<div class="markdown-answer"><p>'+x+'</p></div>';
+}
+function appendChat(role,text,source){
+ const div=document.createElement('div');div.style.margin='8px 0';div.style.padding='12px';div.style.borderRadius='10px';div.style.background=role==='user'?'#e9edff':'#fff';div.style.overflowWrap='anywhere';
+ const title=document.createElement('b');title.textContent=role==='user'?'You':role==='assistant'?'Analyst':'Status';div.appendChild(title);
+ const body=document.createElement('div');body.style.marginTop='6px';body.innerHTML=role==='assistant'?markdownToSafeHtml(text):escapeResearch(text).replace(/\n/g,'<br>');div.appendChild(body);
+ if(role==='assistant'&&source){const foot=document.createElement('div');foot.style.cssText='margin-top:10px;padding-top:8px;border-top:1px solid #e4e8f2;font-size:12px;color:#6f7890';foot.textContent=source.file?`Source document detected: ${source.file} (filename match ${source.match_score}). Answers may also use IPO metadata from ipo_data.csv; check cited PDF pages for each financial figure.`: 'No matching PDF was detected for this answer; verify whether the response relies on metadata only.';div.appendChild(foot);}
+ chatHistory.appendChild(div);chatHistory.scrollTop=chatHistory.scrollHeight;
+}
+document.getElementById('askAnalyst').addEventListener('click',async()=>{const q=document.getElementById('analystQuestion').value.trim();if(!selectedResearchCompany){alert('Select a company first.');return;}if(!q)return;appendChat('user',q);document.getElementById('analystQuestion').value='';const b=document.getElementById('askAnalyst');b.disabled=true;b.textContent='Analysing...';try{const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({company_name:selectedResearchCompany,question:q})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Request failed');appendChat('assistant',d.answer||'No answer returned.',d.source_document||null);}catch(e){appendChat('assistant','Error: '+e.message);}finally{b.disabled=false;b.textContent='Ask GPT-4o mini';}});
+
+document.getElementById('uploadProspectus').addEventListener('click',async()=>{
+ const input=document.getElementById('prospectusUpload');const status=document.getElementById('uploadStatus');
+ if(!selectedResearchCompany){status.textContent='Select a company first.';return;}
+ if(!input.files||!input.files[0]){status.textContent='Choose a PDF file first.';return;}
+ const f=input.files[0];if(!f.name.toLowerCase().endsWith('.pdf')){status.textContent='Only PDF files are supported.';return;}
+ const fd=new FormData();fd.append('company_name',selectedResearchCompany);fd.append('file',f);
+ const btn=document.getElementById('uploadProspectus');btn.disabled=true;status.textContent='Uploading and validating PDF...';
+ try{const r=await fetch('/api/upload-pdf',{method:'POST',body:fd});const d=await r.json();if(!r.ok)throw new Error(d.error||'Upload failed');status.textContent=d.message+' Refreshing company details...';await loadCompanyResearch(selectedResearchCompany);await loadResearchCompanies();status.textContent=d.message;}
+ catch(e){status.textContent='Upload error: '+e.message;}finally{btn.disabled=false;}
+});
+
+
+document.getElementById('uploadProspectus').addEventListener('click',async()=>{
+ const status=document.getElementById('uploadStatus'),input=document.getElementById('prospectusUpload');
+ if(!selectedResearchCompany){status.textContent='Select a company first.';return;}
+ if(!input.files||!input.files[0]){status.textContent='Choose a PDF file first.';return;}
+ const f=input.files[0];if(!f.name.toLowerCase().endsWith('.pdf')){status.textContent='Only PDF files are supported.';return;}
+ const fd=new FormData();fd.append('company_name',selectedResearchCompany);fd.append('file',f);
+ const btn=document.getElementById('uploadProspectus');btn.disabled=true;status.textContent='Uploading and validating PDF...';
+ try{const r=await fetch('/api/upload-pdf',{method:'POST',body:fd});const d=await r.json();if(!r.ok)throw new Error(d.error||'Upload failed');status.textContent=d.message;await loadResearchCompanies();await loadCompanyResearch(selectedResearchCompany);}
+ catch(e){status.textContent='Upload error: '+e.message;}finally{btn.disabled=false;}
+});
+
+document.getElementById('clearChat').addEventListener('click',()=>chatHistory.innerHTML='');
+
+
+refreshIPOData();
+</script>
+
+</body></html>
